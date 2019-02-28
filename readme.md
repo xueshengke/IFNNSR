@@ -1,4 +1,4 @@
-# FNNSR (Caffe)
+# IFNNSR (Caffe)
 
 This is the implementation of paper "Xue, S., et al., Faster Image Super-Resolution by Improved Frequency Domain Neural Networks. Signal, Image and Video Processing, submitted, 2019."
 
