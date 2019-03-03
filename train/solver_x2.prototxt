@@ -1,0 +1,35 @@
+# train and test net definition 
+net: "examples/IFNNSR/train_x2.prototxt"
+
+test_iter: 1000
+# carry out testing interval
+test_interval: 100
+
+# base learning rate
+base_lr: 1e-4
+
+# step policy: base_lr * gamma ^ (floor(iter / stepsize))
+lr_policy: "step"
+gamma: 0.5
+stepsize: 5000
+
+momentum: 0.9
+
+# weight decay coefficient
+weight_decay: 1e-04
+
+# display interval
+display: 100
+
+# maximum number of iterations
+max_iter: 100000
+
+# snapshot intermediate results
+snapshot: 5000
+snapshot_prefix: 'examples/IFNNSR/model/x2/x2_d_c_k'
+
+# run on GPU or CPU
+solver_mode: GPU
+
+# optimization method: SGD, AdaDelta, AdaGrad, Adam, Nesterov, and RMSProp
+type: "SGD"

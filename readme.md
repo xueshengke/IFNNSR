@@ -2,6 +2,8 @@
 
 This is the implementation of paper "Xue, S., et al., Faster Image Super-Resolution by Improved Frequency Domain Neural Networks. Signal, Image and Video Processing, submitted, 2019."
 
+![](IFNNSR1.jpg)
+![](IFNNSR2.jpg)
 
 ## Environment
 
@@ -31,30 +33,30 @@ These datasets are the same as other paper provided. Readers can directly use th
 
 ## Train
 
-1. Copy the 'train' directory to '.../Caffe_ROOT/examples/', and rename the directory to 'FNNSR'.
+1. Copy the 'train' directory to '.../Caffe_ROOT/examples/', and rename the directory to 'IFNNSR'.
 2. Prepare datasets into your own directory.
 3. (optional) run 'data_aug.m' in Matlab for data augmentation; e.g., data_aug('data/BSDS200'), which will generates a new directory 'BSDS-200-aug'.
-4. Run 'generate_train.m' and 'generate_test.m' in Matlab to generate 'train_FNNSR_x[2,3,4].h5' and 'test_FNNSR_x[2,3,4].h5'. (modify the data path in *.m files)
-5. (optional) Modify the parameters in 'create_FNNSR_x[2,3,4].py'. 
-6. Run in command line: 'python create_FNNSR_[2,3,4].py'. It will regenerate 'train_x[2,3,4].prototxt' and 'test_x[2,3,4].prototxt'.
+4. Run 'generate_train_data.m' and 'generate_test_data.m' in Matlab to generate 'train_IFNNSR_x[2,3,4].h5' and 'test_IFNNSR_x[2,3,4].h5'. (modify the data path in *.m files)
+5. (optional) Modify the parameters in 'create_IFNNSR_x[2,3,4].py'. 
+6. Run in command line: 'python create_IFNNSR_[2,3,4].py'. It will regenerate 'train_x[2,3,4].prototxt' and 'test_x[2,3,4].prototxt'.
 7. (optional) modify the parametes in 'solver_x[2,3,4].prototxt'.
-8. Run in command line './examples/FNNSR/run_train_x[2,3,4].sh' at 'Caffe_ROOT' path.
+8. Run in command line './examples/IFNNSR/run_train_x[2,3,4].sh' at 'Caffe_ROOT' path.
 9. Waiting for the training procedure completed.
 
 ## Parameters for training (saved in solver_x2.prototxt)
-- net: "examples/FNNSR/train_x2.prototxt"
+- net: "examples/IFNNSR/train_x2.prototxt"
 - test_iter: 1000
 - test_interval: 100
-- base_lr: 1e-3
+- base_lr: 1e-4
 - lr_policy: "step"
 - gamma: 0.5
-- stepsize: 5000
+- stepsize: 10000
 - momentum: 0.9
 - weight_decay: 1e-04
 - display: 100
 - max_iter: 100000
 - snapshot: 5000
-- snapshot_prefix: 'examples/FNNSR/model/x2/x2_d_c_k_'
+- snapshot_prefix: 'examples/IFNNSR/model/x2/x2_d_c_k_'
 - solver_mode: GPU
 - type: "SGD"
 
@@ -63,8 +65,8 @@ These datasets are the same as other paper provided. Readers can directly use th
 1. Prepare datasets into 'data' directory.
 2. Copy 'test_x[2,3,4].prototxt' from training directory to 'test' directory.
 3. Copy '\*.caffemodel' from training directory to 'test/model' directory.
-4. Modify some paths in 'test_FNNSR_main.m' if necessary.
-5. Run 'test_FNNSR_main.m' in Matlab.
+4. Modify some paths in 'test_IFNNSR_main.m' if necessary.
+5. Run 'test_IFNNSR_main.m' in Matlab.
 6. Metrics will be printed and reconstrcuted images will be saved into 'result' directory.
 
 ## Network architecture
@@ -84,6 +86,29 @@ where $\circ$ is the Hadamard product (i.e., elementwise product) and $W$ contai
 - /caffe/src/caffe/layers/elementwise_product_layer.cu
 
 Place the three files above to corresponding positions of your own caffe directory. **Do not forget** to add a few definitions into '.../caffe/src/caffe/proto/caffe.proto' file. Detailed steps are provided in 'warning do NOT replace.txt' in our directory along with 'caffe.proto'.
+
+## Custom Caffe layer: Weighted Euclidean loss
+We propose the weighted Euclidean loss, which assigns larger values of weights to high-frequency parts and smaller values of
+weights to low-frequency parts. Precisely, the loss function is defined as
+\begin{align}
+	{W}_{\rm e} &=
+	\begin{bmatrix}
+	w_{11} & w_{12} & \cdots & w_{1n} \\
+	w_{21} & w_{22} & \cdots & w_{2n} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	w_{m1} & w_{m2} & \cdots & w_{mn}
+	\end{bmatrix} \in \mathbb{R}^{m \times n},  \\
+	w_{ij} &= \exp\left ( \alpha \left (\frac{|m/2-i|}{m/2} \right )^2 + \beta \left (\frac{|n/2-j|}{n/2} \right )^2 \right ), \nonumber \\
+	i &= 1,2,\ldots,m, \ \ j = 1,2,\ldots,n, \\
+	e &= \frac{1}{2} \| {W}_{\rm e} \circ (\hat{I}_{\rm out} - \hat{I}_{\rm HR})\|_{\rm F}^2,
+\end{align}
+where $\alpha$ and $\beta$ are constants, ${W}_{\rm e}$ is the weight matrix, $\hat{I}_{\rm out}$ is the output of our network, $\hat{I}_{\rm HR}$ is the corresponding label, and $\|\cdot\|_{\rm F}$ denotes the Frobenius norm. 
+**Caffe files:** 
+- /caffe/include/caffe/layers/weight_l2_loss_layer.hpp
+- /caffe/src/caffe/layers/weight_l2_loss_layer.cpp
+- /caffe/src/caffe/layers/weight_l2_loss_layer.cu
+
+![](weight_l2_loss_layer.jpg)
 
 If you have any suggestion or question, please do not hesitate to contact me.
 

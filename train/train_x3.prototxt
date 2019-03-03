@@ -1,0 +1,620 @@
+layer {
+  name: "data"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  hdf5_data_param {
+    source: "examples/IFNNSR/train_data_x3.txt"
+    batch_size: 64
+  }
+}
+layer {
+  name: "data"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  hdf5_data_param {
+    source: "examples/IFNNSR/test_data_x3.txt"
+    batch_size: 2
+  }
+}
+layer {
+  name: "ElementWiseProduct1"
+  type: "ElementWiseProduct"
+  bottom: "data"
+  top: "ElementWiseProduct1"
+  elementwise_product_param {
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0.10000000149
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    share: 4
+  }
+}
+layer {
+  name: "Convolution1"
+  type: "Convolution"
+  bottom: "ElementWiseProduct1"
+  top: "Convolution1"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH1"
+  type: "TanH"
+  bottom: "Convolution1"
+  top: "TanH1"
+}
+layer {
+  name: "Convolution2"
+  type: "Convolution"
+  bottom: "TanH1"
+  top: "Convolution2"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH2"
+  type: "TanH"
+  bottom: "Convolution2"
+  top: "TanH2"
+}
+layer {
+  name: "Convolution3"
+  type: "Convolution"
+  bottom: "TanH2"
+  top: "Convolution3"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 4
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH3"
+  type: "TanH"
+  bottom: "Convolution3"
+  top: "TanH3"
+}
+layer {
+  name: "ElementWiseProduct2"
+  type: "ElementWiseProduct"
+  bottom: "TanH3"
+  top: "ElementWiseProduct2"
+  elementwise_product_param {
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0.10000000149
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    share: 4
+  }
+}
+layer {
+  name: "Convolution4"
+  type: "Convolution"
+  bottom: "ElementWiseProduct2"
+  top: "Convolution4"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH4"
+  type: "TanH"
+  bottom: "Convolution4"
+  top: "TanH4"
+}
+layer {
+  name: "Convolution5"
+  type: "Convolution"
+  bottom: "TanH4"
+  top: "Convolution5"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH5"
+  type: "TanH"
+  bottom: "Convolution5"
+  top: "TanH5"
+}
+layer {
+  name: "Convolution6"
+  type: "Convolution"
+  bottom: "TanH5"
+  top: "Convolution6"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 4
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH6"
+  type: "TanH"
+  bottom: "Convolution6"
+  top: "TanH6"
+}
+layer {
+  name: "ElementWiseProduct3"
+  type: "ElementWiseProduct"
+  bottom: "TanH6"
+  top: "ElementWiseProduct3"
+  elementwise_product_param {
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0.10000000149
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    share: 4
+  }
+}
+layer {
+  name: "Convolution7"
+  type: "Convolution"
+  bottom: "ElementWiseProduct3"
+  top: "Convolution7"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH7"
+  type: "TanH"
+  bottom: "Convolution7"
+  top: "TanH7"
+}
+layer {
+  name: "Convolution8"
+  type: "Convolution"
+  bottom: "TanH7"
+  top: "Convolution8"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH8"
+  type: "TanH"
+  bottom: "Convolution8"
+  top: "TanH8"
+}
+layer {
+  name: "Convolution9"
+  type: "Convolution"
+  bottom: "TanH8"
+  top: "Convolution9"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 4
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH9"
+  type: "TanH"
+  bottom: "Convolution9"
+  top: "TanH9"
+}
+layer {
+  name: "ElementWiseProduct4"
+  type: "ElementWiseProduct"
+  bottom: "TanH9"
+  top: "ElementWiseProduct4"
+  elementwise_product_param {
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0.10000000149
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    share: 4
+  }
+}
+layer {
+  name: "Convolution10"
+  type: "Convolution"
+  bottom: "ElementWiseProduct4"
+  top: "Convolution10"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH10"
+  type: "TanH"
+  bottom: "Convolution10"
+  top: "TanH10"
+}
+layer {
+  name: "Convolution11"
+  type: "Convolution"
+  bottom: "TanH10"
+  top: "Convolution11"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH11"
+  type: "TanH"
+  bottom: "Convolution11"
+  top: "TanH11"
+}
+layer {
+  name: "Convolution12"
+  type: "Convolution"
+  bottom: "TanH11"
+  top: "Convolution12"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 4
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH12"
+  type: "TanH"
+  bottom: "Convolution12"
+  top: "TanH12"
+}
+layer {
+  name: "ElementWiseProduct5"
+  type: "ElementWiseProduct"
+  bottom: "TanH12"
+  top: "ElementWiseProduct5"
+  elementwise_product_param {
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0.10000000149
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    share: 4
+  }
+}
+layer {
+  name: "Convolution13"
+  type: "Convolution"
+  bottom: "ElementWiseProduct5"
+  top: "Convolution13"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH13"
+  type: "TanH"
+  bottom: "Convolution13"
+  top: "TanH13"
+}
+layer {
+  name: "Convolution14"
+  type: "Convolution"
+  bottom: "TanH13"
+  top: "Convolution14"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 16
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "TanH14"
+  type: "TanH"
+  bottom: "Convolution14"
+  top: "TanH14"
+}
+layer {
+  name: "Convolution15"
+  type: "Convolution"
+  bottom: "TanH14"
+  top: "Convolution15"
+  param {
+    lr_mult: 1.0
+  }
+  convolution_param {
+    num_output: 4
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    group: 4
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    dilation: 1
+  }
+}
+layer {
+  name: "model"
+  type: "TanH"
+  bottom: "Convolution15"
+  top: "model"
+}
+layer {
+  name: "Eltwise1"
+  type: "Eltwise"
+  bottom: "TanH3"
+  bottom: "TanH6"
+  top: "Eltwise1"
+}
+layer {
+  name: "Eltwise2"
+  type: "Eltwise"
+  bottom: "Eltwise1"
+  bottom: "TanH9"
+  top: "Eltwise2"
+}
+layer {
+  name: "Eltwise3"
+  type: "Eltwise"
+  bottom: "Eltwise2"
+  bottom: "TanH12"
+  top: "Eltwise3"
+}
+layer {
+  name: "sum"
+  type: "Eltwise"
+  bottom: "Eltwise3"
+  bottom: "model"
+  top: "sum"
+}
+layer {
+  name: "predict"
+  type: "ElementWiseProduct"
+  bottom: "sum"
+  top: "predict"
+  elementwise_product_param {
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0.10000000149
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    share: 4
+  }
+}
+layer {
+  name: "loss"
+  type: "WeightL2Loss"
+  bottom: "predict"
+  bottom: "label"
+  top: "loss"
+}
+

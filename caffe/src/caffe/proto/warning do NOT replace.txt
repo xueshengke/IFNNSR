@@ -1,0 +1,40 @@
+# do NOT directly replace this 'caffe.proto' file to your own directory.
+
+1. Find your own 'caffe.proto' file, usually at '.../caffe/src/caffe/proto/'
+
+2. Open it and locate at one line, for example:
+// LayerParameter next available layer-specific ID: 147 (last added: recurrent_param)
+message LayerParameter {
+	optional string name = 1; // the layer name
+	optional string type = 2; // the layer type
+	repeated string bottom = 3; // the name of each bottom blob
+	repeated string top = 4; // the name of each top blob
+	...
+	...
+	...
+	optional RecurrentParameter recurrent_param = 146;
+}
+
+3. Declare the 'ElementWiseProductParameter', using the ID, for example:
+// LayerParameter next available layer-specific ID: 148 (last added: elementwise_product_param)
+message LayerParameter {
+	optional string name = 1; // the layer name
+	optional string type = 2; // the layer type
+	repeated string bottom = 3; // the name of each bottom blob
+	repeated string top = 4; // the name of each top blob
+	...
+	...
+	...
+	optional RecurrentParameter recurrent_param = 146;
+	optional ElementWiseProductParameter elementwise_product_param = 147;
+}
+
+4. Write the detailed parameters, at the last line of file, add the following lines:
+message ElementWiseProductParameter {
+	optional bool bias_term = 1 [default = false]; // whether to have bias terms
+	optional FillerParameter weight_filler = 2 ; // The filler for the weight
+	optional FillerParameter bias_filler = 3 ; // The filler for the bias
+	optional int32 share = 4 [default = 1] ; // Share weights with x channels
+}
+
+5. Save and close this file.
